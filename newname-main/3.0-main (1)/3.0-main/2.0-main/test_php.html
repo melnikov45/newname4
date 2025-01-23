@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Модальное окно</title>
+    <link rel="stylesheet" href="styles.css"> 
+    <?php include 'modal.php'; ?> <!-- Подключите ваш CSS файл -->
+</head>
+<body>
+
+    <div id="myModal2" class="modal2">
+        <div class="modal-content2">
+            <div class="modal-header2">
+                <span class="close2">&times;</span>
+                <h2 style="text-align: center;">Внести изменения</h2>
+            </div>
+            <div class="select_choice">
+                <form>
+                    <label for="name-select">Введите название дисциплины:</label>
+                    <select id="name-select" name="discipline">
+                        <?php foreach ($disciplines as $discipline): ?>
+                            <option value="<?php echo htmlspecialchars($discipline['title']); ?>">
+                                <?php echo htmlspecialchars($discipline['title']); ?>
+                            </option>
+                        <?php endforeach; ?>
+                    </select>
+                </form>
+                <form>
+                    <label for="age-select">Введите номер кабинета:</label>
+                    <select id="age-select" name="classroom">
+                        <?php foreach ($classrooms as $classroom): ?>
+                            <option value="<?php echo htmlspecialchars($classroom['room_number']); ?>">
+                                <?php echo htmlspecialchars($classroom['room_number']); ?>
+                            </option>
+                        <?php endforeach; ?>
+                    </select>
+                </form>
+                <form>
+                    <label for="city-select">Введите тип занятия:</label>
+                    <select id="city-select" name="lesson_type">
+                        <?php foreach ($lessonTypes as $lessonType): ?>
+                            <option value="<?php echo htmlspecialchars($lessonType['type']); ?>">
+                                <?php echo htmlspecialchars($lessonType['type']); ?>
+                            </option>
+                        <?php endforeach; ?>
+                    </select>
+                </form>
+                <form>
+                    <label for="country">Введите название учебной группы:</label>
+                    <select id="country" name="group">
+                        <?php foreach ($groups as $group): ?>
+                            <option value="<?php echo htmlspecialchars($group['group_name']); ?>">
+                                <?php echo htmlspecialchars($group['group_name']); ?>
+                            </option>
+                        <?php endforeach; ?>
+                    </select>
+                </form>
+                <input id="submit-button" type="button" value="Подтвердить">
+                <input id="delete-button" type="button" value="Удалить">
+            </div>
+        </div>
+    </div>

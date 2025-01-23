@@ -1,0 +1,231 @@
+<div class="checkbox-all">
+    <div class="checkbox-group">
+        <h3>ПМК 1</h3>
+        <div class="checkbox-item">
+            <input type="checkbox" class="my-checkbox_1" id="checkbox_1" value="Группа 1"/>
+            <label for="checkbox_1">Группа 1</label>
+        </div>
+        <div class="checkbox-item">
+            <input type="checkbox" class="my-checkbox_1" id="checkbox_2" value="Группа 2"/>
+            <label for="checkbox_2">Группа 2</label>
+        </div>
+        
+        <h4>Фамилии:</h4>
+        <div class="checkbox-item">
+            <input type="checkbox" class="my-checkbox_2" id="my_checkbox_1" value="Иванов"/>
+            <label for="my_checkbox_1">Иванов</label>
+        </div>
+        <div class="checkbox-item">
+            <input type="checkbox" class="my-checkbox_2" id="my_checkbox_2" value="Петров"/>
+            <label for="my_checkbox_2">Петров</label>
+        </div>
+        <div class="checkbox-item">
+            <input type="checkbox" class="my-checkbox_2" id="my_checkbox_3" value="Сидоров"/>
+            <label for="my_checkbox_3">Сидоров</label>
+        </div>
+    </div>
+
+    <div class="checkbox-group">
+        <h3>ПМК 2</h3>
+        <div class="checkbox-item">
+            <input type="checkbox" class="my-checkbox_1" id="checkbox_3" value="Группа 3"/>
+            <label for="checkbox_3">Группа 3</label>
+        </div>
+        <div class="checkbox-item">
+            <input type="checkbox" class="my-checkbox_1" id="checkbox_4" value="Группа 4"/>
+            <label for="checkbox_4">Группа 4</label>
+        </div>
+        
+        <h4>Фамилии:</h4>
+        <div class="checkbox-item">
+            <input type="checkbox" class="my-checkbox_2" id="my_checkbox_4" value="Смирнов"/>
+            <label for="my_checkbox_4">Смирнов</label>
+        </div>
+        <div class="checkbox-item">
+            <input type="checkbox" class="my-checkbox_2" id="my_checkbox_5" value="Кузнецов"/>
+            <label for="my_checkbox_5">Кузнецов</label>
+        </div>
+    </div>
+</div>
+
+<div class="date-picker">
+    <select id="month"></select>
+    <select id="year"></select>
+    <button class="button" id="link-button">Сформировать расписание</button>
+</div>
+
+<div id="myModal" class="modal">
+    <div class="modal-content">
+        <div class="modal-header">
+            <span class="close">&times;</span>
+            <h2>Расписание</h2>
+            <p id="selected-date"></p>
+        </div>
+        <div class="modal-body">
+            <table id="data-table">
+                <thead>
+                    <tr>
+                        <th rowspan="2">Звание, фамилия</th>
+                        <th rowspan="2">Часы занятий</th>
+                        <th colspan="31">Дни месяца</th>
+                    </tr>
+                    <tr id="day-headers"></tr>
+                </thead>
+                <tbody id="table-body"></tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+<script>
+    // Заполнение выпадающих списков для месяцев и годов
+    const monthSelect = document.getElementById('month');
+    const yearSelect = document.getElementById('year');
+
+    const months = [
+        "Январь", "Февраль", "Март", "Апрель", "Май", "Июнь", "Июль", "Август", "Сентябрь", "Октябрь", "Ноябрь", "Дека брь"
+    ];
+
+    const currentYear = new Date().getFullYear();
+    for (let year = currentYear - 5; year <= currentYear + 5; year++) {
+        const option = document.createElement('option');
+        option.value = year;
+        option.textContent = year;
+        yearSelect.appendChild(option);
+    }
+
+    months.forEach((month, index) => {
+        const option = document.createElement('option');
+        option.value = index + 1; // Месяцы от 1 до 12
+        option.textContent = month;
+        monthSelect.appendChild(option);
+    });
+
+    document.getElementById('link-button').addEventListener('click', function() {
+        const selectedMonth = parseInt(monthSelect.value) - 1; // Месяцы от 0 до 11
+        const selectedYear = parseInt(yearSelect.value);
+
+        // Получаем количество дней в выбранном месяце
+        const daysInMonth = new Date(selectedYear, selectedMonth + 1, 0).getDate();
+
+        // Обновляем заголовки дней
+        const dayHeadersRow = document.getElementById('day-headers');
+        dayHeadersRow.innerHTML = ''; // Очищаем предыдущие заголовки
+
+        for (let day = 1; day <= daysInMonth; day++) {
+            const th = document.createElement('th');
+            th.textContent = day;
+            dayHeadersRow.appendChild(th);
+        }
+
+        // Очищаем тело таблицы
+        const tableBody = document.getElementById('table-body');
+        tableBody.innerHTML = ''; // Очищаем предыдущие строки
+
+        // Получаем выбранные чекбоксы пользователей
+        const selectedUsers = Array.from(document.querySelectorAll('.my-checkbox_2:checked')).map(checkbox => checkbox.value);
+
+        // Генерация строк таблицы для каждого выбранного пользователя
+        selectedUsers.forEach(userName => {
+            const user = {
+                name: userName,
+                hours: ["1 - 2", "3 - 4", "5 - 6", "7 - 8"],
+                subjects: [["ТАД1", "АСУ2", "АСУ3", "АСУ4"], ["", "", "АСУ8", "АСУ9"], ["", "", "АСУ13", "АСУ14"], ["", "", "АСУ18", "АСУ19"]]
+            };
+
+            user.hours.forEach((hour, index) => {
+                const row = document.createElement('tr');
+                if (index === 0) {
+                    const nameCell = document.createElement('td');
+                    nameCell.rowSpan = user.hours.length; // Объединяем ячейку для имени пользователя 
+                    nameCell.textContent = user.name;
+                    row.appendChild(nameCell);
+                }
+                const hourCell = document.createElement('td');
+                hourCell.textContent = hour;
+                row.appendChild(hourCell);
+
+                // Добавляем предметы в ячейки
+                user.subjects[index].forEach((subject, dayIndex) => {
+                    const subjectCell = document.createElement('td');
+                    subjectCell.textContent = subject || ""; // Если предмета нет, оставляем пустую ячейку
+
+                    // Определяем, является ли день выходным
+                    const dayOfMonth = dayIndex + 1; // День месяца
+                    const date = new Date(selectedYear, selectedMonth, dayOfMonth);
+                    const dayOfWeek = date.getDay(); // 0 - воскресенье, 6 - суббота
+
+                    // Если день - суббота или воскресенье, добавляем класс
+                    if (dayOfWeek === 0 || dayOfWeek === 6) {
+                        subjectCell.classList.add('weekend');
+                    }
+
+                    row.appendChild(subjectCell);
+                });
+
+                tableBody.appendChild(row);
+            });
+        });
+
+        // Обновляем выбранную дату
+        document.getElementById('selected-date').innerText = 'Выбранный месяц: ' + months[selectedMonth] + ' ' + selectedYear;
+
+        // Открываем модальное окно
+        var modal = document.getElementById('myModal');
+        modal.style.display = "block";
+
+        // Добавляем обработчик клика для ячеек таблицы
+        const tds = document.querySelectorAll('#data-table tbody td');
+        tds.forEach((td) => {
+            td.onclick = function() {
+                // Получаем индекс столбца
+                const columnIndex = td.cellIndex;
+
+                // Проверяем, является ли клик по столбцам "Звание, фамилия" (0) или "Часы занятий" (1)
+                if (columnIndex === 0 || columnIndex === 1) {
+                    return; // Игнорируем клик по этим столбцам
+                }
+
+// Если клик по ячейкам с данными
+selectedCell = td; // Сохраняем ссылку на выбранную ячейку
+                // Убираем выделение с остальных ячеек
+                tds.forEach(c => c.style.backgroundColor = ''); // Сбрасываем цвет
+                td.style.backgroundColor = 'blueviolet'; // Выделяем выбранную ячейку
+                document.getElementById('myModal2').style.display = "block"; // Открываем myModal2
+            }
+        });
+    });
+
+    const span = document.getElementsByClassName("close")[0];
+    span.onclick = function() {
+        document.getElementById('myModal').style.display = "none"; // Закрываем myModal
+    }
+
+    // Обработчик клика для закрытия myModal2
+    const span2 = document.getElementsByClassName("close2")[0];
+    if (span2) {
+        span2.onclick = function() {
+            document.getElementById('myModal2').style.display = "none"; // Закрываем myModal2
+        }
+    }
+
+    // Закрытие myModal2 при клике вне его
+    window.onclick = function(event) {
+        const modal2 = document.getElementById('myModal2');
+        if (event.target == modal2) {
+            modal2.style.display = "none"; // Закрываем myModal2
+        }
+    }
+
+    // Обработчик для чекбоксов групп
+    document.querySelectorAll('.my-checkbox_1').forEach(function(groupCheckbox) {
+        groupCheckbox.addEventListener('change', function() {
+            // Получаем все чекбоксы пользователей в текущей группе
+            // Получаем все чекбоксы пользователей в текущей группе
+            const userCheckboxes = groupCheckbox.closest('.checkbox-group').querySelectorAll('.my-checkbox_2');
+            userCheckboxes.forEach(function(userCheckbox) {
+                userCheckbox.checked = groupCheckbox.checked; // Устанавливаем состояние чекбоксов пользователей
+            });
+        });
+    });
+</script>

@@ -1,0 +1,10 @@
+SELECT p.lastname,p.firstname,p.patronymic,crs.cid,crs.alias,r.rid,r.name, e.typeid,e.alias,
+g.gid,g.name, pr.lid, pr.name
+	FROM public.nnz_schedule as nnz_s
+	join people as p on p.mid = 3
+	join courses as crs on crs.cid=nnz_s.cid
+	join rooms as r on r.rid=any(nnz_s.rid)
+	join eventtools as e on nnz_s.pair_type_id = e.typeid
+	join groupname as g on nnz_s.gid = g.gid
+	join periods as pr on nnz_s.period  = pr.lid
+	where 3 = any(nnz_s.teacher_mid) and nnz_s.sh_var_id=15 and nnz_s.day_of_week=1
